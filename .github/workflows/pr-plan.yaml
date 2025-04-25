@@ -3,10 +3,11 @@ name: Terraform Plan on PR
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'Environment to deploy to'
+      tf_directory:
+        description: 'Terraform directory (e.g. infra/, terraform/dev)'
         required: true
-        default: 'dev'
+        default: 'environments/dev'
+
   #pull_request:
    # branches:
     #  - main
