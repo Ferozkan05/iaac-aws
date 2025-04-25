@@ -39,3 +39,40 @@ resource "aws_lb_target_group" "admissions" {
   vpc_id      = var.vpc_id
   target_type = "ip"
 }
+resource "aws_lb_listener" "http" {
+   load_balancer_arn = aws_lb.this.arn
+   port              = 80
+   protocol          = "HTTP"
+ 
+   default_action {
+     type             = "forward"
+     target_group_arn = aws_lb_target_group.admissions.arn
+   }
+ }
+ resource "aws_lb_listener_rule" "patient" {
+   listener_arn = aws_lb_listener.http.arn
+   priority     = 10
+   action {
+     type             = "forward"
+     target_group_arn = aws_lb_target_group.ecs.arn
+   }
+   condition {
+     path_pattern {
+       values = ["/patient*"]
+      }
+    }
+ }
+ 
+ resource "aws_lb_listener_rule" "admission" {
+   listener_arn = aws_lb_listener.http.arn
+   priority     = 20
+   action {
+     type             = "forward"
+     target_group_arn = aws_lb_target_group.admissions.arn
+   }
+   condition {
+     path_pattern {
+       values = ["/appointments*"]
+      }
+    }
+ }
