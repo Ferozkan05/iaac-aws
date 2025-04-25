@@ -26,12 +26,19 @@ resource "aws_lb" "this" {
 
 resource "aws_lb_target_group" "ecs" {
   name        = "${var.env}-ecs-tg"
-  port        = 80
+  port        = 3000
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "ip"
 }
 
+resource "aws_lb_target_group" "admissions" {
+  name        = "${var.env}-ecs-tg-admission"
+  port        = 3001
+  protocol    = "HTTP"
+  vpc_id      = var.vpc_id
+  target_type = "ip"
+}
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.this.arn
   port              = 80
@@ -41,4 +48,31 @@ resource "aws_lb_listener" "http" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.ecs.arn
   }
+}
+resource "aws_lb_listener_rule" "patient" {
+  listener_arn = aws_lb_listener.http.arn
+  priority     = 10
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ecs.arn
+  }
+  condition {
+    path_pattern {
+      values = ["/patient*"]
+     }
+   }
+}
+
+resource "aws_lb_listener_rule" "admission" {
+  listener_arn = "${aws_lb_listener.http.arn}"
+  priority     = 20
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.admission.arn
+  }
+  condition {
+    path_pattern {
+      values = ["/appointments*"]
+     }
+   }
 }
