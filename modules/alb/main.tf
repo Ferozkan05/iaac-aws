@@ -64,11 +64,11 @@ resource "aws_lb_listener_rule" "patient" {
 }
 
 resource "aws_lb_listener_rule" "admission" {
-  listener_arn = "${aws_lb_listener.http.arn}"
+  listener_arn = aws_lb_listener.http.arn
   priority     = 20
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.admission.arn
+    target_group_arn = aws_lb_target_group.admissions.arn
   }
   condition {
     path_pattern {
