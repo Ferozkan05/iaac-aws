@@ -1,9 +1,12 @@
 name: Terraform Format and Validate
 
 on:
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      tf_directory:
+        description: 'Terraform directory (e.g. infra/, terraform/dev)'
+        required: true
+        default: 'terraform'
 
 jobs:
   terraform:
