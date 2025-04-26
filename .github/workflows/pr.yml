@@ -1,6 +1,7 @@
 name: Terraform Format and Validate
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       tf_directory:
