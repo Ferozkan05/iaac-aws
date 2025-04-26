@@ -8,9 +8,9 @@ on:
         required: true
         default: 'environments/dev'
 
-  #pull_request:
-   # branches:
-    #  - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   terraform:
