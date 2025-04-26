@@ -7,6 +7,11 @@ on:
         description: 'Terraform directory (e.g. infra/, terraform/dev)'
         required: true
         default: 'environments/dev'
+      create:
+        description: 'Deploy?'
+        required: true
+        default: 'true'
+        type: boolean          
 #  push:
 #    branches:
 #      - main
@@ -31,8 +36,13 @@ jobs:
       
 
     - name: Terraform Apply
+      if: ${{ github.event.inputs.create == 'true' }}
       run: terraform apply -auto-approve
       working-directory: ${{ github.event.inputs.tf_directory }}
+    - name: Terraform Destory
+      if: ${{ github.event.inputs.create == 'false' }}
+      run: terraform destroy -auto-approve
+      working-directory: ${{ github.event.inputs.tf_directory }}        
     env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
