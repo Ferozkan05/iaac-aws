@@ -8,11 +8,12 @@ on:
         required: true
         default: 'environments/dev'
       create:
-        description: 'Deploy?'
+        description: 'Destroy?'
         required: true
-        default: 'true'
+        default: 'false'
         type: boolean          
   push:
+    
     branches:
       - main
 
@@ -36,11 +37,12 @@ jobs:
       
 
     - name: Terraform Apply
-      if: ${{ github.event.inputs.create == 'true' }}
+
       run: terraform apply -auto-approve
       working-directory: ${{ github.event.inputs.tf_directory }}
+      
     - name: Terraform Destory
-      if: ${{ github.event.inputs.create == 'false' }}
+      if: ${{ github.event.inputs.create == 'true' }}
       run: terraform destroy -auto-approve
       working-directory: ${{ github.event.inputs.tf_directory }}        
     env:
